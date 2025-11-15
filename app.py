@@ -18,7 +18,7 @@ CORS(app)
 # Configuration with environment variables
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', 'whatsapp-bulk-bot-2024-secret-key-12345')
-    MASTER_SHEET_URL = os.environ.get('MASTER_SHEET_URL', 'https://docs.google.com/spreadsheets/d/1YOUR_SHEET_ID_HERE/edit')
+    MASTER_SHEET_URL = os.environ.get('MASTER_SHEET_URL', 'https://docs.google.com/spreadsheets/d/1GAKJvxTYObty2oLctbsLoJAQwWLHVPRSm_bCfK1mEeM/edit')
     
     # Get credentials from environment variables
     GOOGLE_CREDENTIALS = {
@@ -235,3 +235,4 @@ if __name__ == "__main__":
     port = int(os.environ.get('PORT', 10000))
     print(f"🚀 WhatsApp Bot Server starting on port {port}")
     app.run(host="0.0.0.0", port=port, debug=False)
+
