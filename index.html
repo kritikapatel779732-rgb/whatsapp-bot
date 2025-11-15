@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Bulk Messenger</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+      
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1f2937;
+            --light: #f8fafc;
+        }
+      
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--dark);
+        }
+      
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+      
+        .header {
+            background: linear-gradient(135deg, var(--dark) 0%, #374151 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+      
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+      
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 40px 30px;
+        }
+      
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+      
+        .panel {
+            background: var(--light);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+      
+        .panel h2 {
+            color: var(--dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+        }
+      
+        .form-group {
+            margin-bottom: 25px;
+        }
+      
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+      
+        input, textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+      
+        input:focus, textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+      
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin: 25px 0;
+        }
+      
+        .btn {
+            flex: 1;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+      
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+        }
+      
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
+            color: white;
+        }
+      
+        .btn-success {
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+            color: white;
+        }
+      
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+      
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+      
+        .status-container {
+            margin-top: 25px;
+        }
+      
+        .status {
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: none;
+        }
+      
+        .status-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+      
+        .status-error {
+            background: #fee2e2;
+            color: #7f1d1d;
+            border: 1px solid #fca5a5;
+        }
+      
+        .status-loading {
+            background: #dbeafe;
+            color: #1e3a8a;
+            border: 1px solid #93c5fd;
+        }
+      
+        .user-info {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e5e7eb;
+            margin-bottom: 20px;
+        }
+      
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+      
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+      
+        .info-label {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-bottom: 5px;
+        }
+      
+        .info-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+      
+        .auth-form {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+      
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+      
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+      
+        .secret-key-box {
+            background: #f3f4f6;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px dashed #d1d5db;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 14px;
+        }
+      
+        .data-input {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e5e7eb;
+            margin: 20px 0;
+        }
+      
+        .data-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+      
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+      
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+      
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+      
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+      
+        .tab-container {
+            margin: 20px 0;
+        }
+      
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e5e7eb;
+            margin-bottom: 20px;
+        }
+      
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+      
+        .tab.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+        }
+      
+        .tab-content {
+            display: none;
+        }
+      
+        .tab-content.active {
+            display: block;
+        }
+      
+        .bot-log {
+            background: #1f2937;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+      
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 2px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fab fa-whatsapp"></i> WhatsApp Bulk Messenger</h1>
+            <p>Send bulk messages automatically with individual bot instances</p>
+        </div>
+      
+        <div class="main-content">
+            <!-- LEFT PANEL - AUTHENTICATION & CONTROLS -->
+            <div class="panel">
+                <!-- AUTH SECTION -->
+                <div id="authSection">
+                    <div class="auth-form" id="loginForm">
+                        <h2><i class="fas fa-sign-in-alt"></i> Login</h2>
+                        <div class="form-group">
+                            <label for="loginEmail">Email Address</label>
+                            <input type="email" id="loginEmail" placeholder="your@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password</label>
+                            <input type="password" id="loginPassword" placeholder="Your password">
+                        </div>
+                        <button class="btn btn-primary" onclick="login()">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                        <p style="text-align: center; margin-top: 15px;">
+                            Don't have an account? <a href="javascript:void(0)" onclick="showRegister()" style="color: var(--primary);">Register here</a>
+                        </p>
+                    </div>
+                  
+                    <div class="auth-form" id="registerForm" style="display:none">
+                        <h2><i class="fas fa-user-plus"></i> Register</h2>
+                        <div class="form-group">
+                            <label for="registerEmail">Email Address</label>
+                            <input type="email" id="registerEmail" placeholder="your@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">Password</label>
+                            <input type="password" id="registerPassword" placeholder="Create a password (min 6 characters)">
+                        </div>
+                        <button class="btn btn-primary" onclick="register()">
+                            <i class="fas fa-user-plus"></i> Register
+                        </button>
+                        <p style="text-align: center; margin-top: 15px;">
+                            Already have an account? <a href="javascript:void(0)" onclick="showLogin()" style="color: var(--primary);">Login here</a>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- DASHBOARD SECTION -->
+                <div id="dashboardSection" style="display:none">
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+
+                    <h2><i class="fas fa-rocket"></i> Bot Control Center</h2>
+                  
+                    <div class="user-info">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Your Email</span>
+                                <span class="info-value" id="userEmail">-</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Credits Remaining</span>
+                                <span class="info-value" id="userCredits">0</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Bot Status</span>
+                                <span class="info-value" id="botStatus">-</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Secret Key</span>
+                                <span class="info-value">
+                                    <span id="userSecretKey">-</span>
+                                    <button class="btn" onclick="copySecretKey()" style="padding: 5px 10px; margin-left: 10px; background: #6b7280; color: white;">
+                                        <i class="fas fa-copy"></i> Copy
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-container">
+                        <div class="tabs">
+                            <div class="tab active" onclick="switchTab('data')">Data Input</div>
+                            <div class="tab" onclick="switchTab('control')">Bot Control</div>
+                            <div class="tab" onclick="switchTab('history')">History</div>
+                        </div>
+
+                        <!-- DATA TAB -->
+                        <div id="dataTab" class="tab-content active">
+                            <div class="data-input">
+                                <h3><i class="fas fa-table"></i> Enter Phone Numbers & Messages</h3>
+                                <div id="dataRows">
+                                    <div class="data-row">
+                                        <input type="text" placeholder="Phone number" class="phone-input">
+                                        <textarea placeholder="Message" rows="2" class="message-input"></textarea>
+                                        <span class="status-badge">Pending</span>
+                                    </div>
+                                </div>
+                                <button class="btn" onclick="addDataRow()" style="background: #6b7280; color: white; margin-right: 10px;">
+                                    <i class="fas fa-plus"></i> Add Row
+                                </button>
+                                <button class="btn btn-primary" onclick="saveData()">
+                                    <i class="fas fa-save"></i> Save Data
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- CONTROL TAB -->
+                        <div id="controlTab" class="tab-content">
+                            <div class="btn-group">
+                                <button class="btn btn-success" onclick="startBot()" id="startBtn">
+                                    <i class="fas fa-play"></i> START BOT
+                                </button>
+                                <button class="btn btn-danger" onclick="stopBot()" id="stopBtn">
+                                    <i class="fas fa-stop"></i> STOP BOT
+                                </button>
+                            </div>
+                            <div class="bot-log" id="botLog">
+                                <div class="log-entry">Bot console ready...</div>
+                            </div>
+                        </div>
+
+                        <!-- HISTORY TAB -->
+                        <div id="historyTab" class="tab-content">
+                            <div id="previousData">
+                                <p>No previous data found.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="status-container">
+                        <div id="status" class="status"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL - INFORMATION -->
+            <div class="panel">
+                <h2><i class="fas fa-info-circle"></i> How It Works</h2>
+                
+                <div class="user-info">
+                    <h3><i class="fas fa-database"></i> Data Storage</h3>
+                    <p>Your data is automatically saved in our secure Google Sheets database.</p>
+                    <ul style="margin: 10px 0 10px 20px;">
+                        <li>No need to manage files</li>
+                        <li>Automatic backups</li>
+                        <li>Access from anywhere</li>
+                    </ul>
+                </div>
+
+                <div class="user-info">
+                    <h3><i class="fas fa-robot"></i> Individual Bot Instances</h3>
+                    <p>Each user gets their own isolated bot instance:</p>
+                    <ul style="margin: 10px 0 10px 20px;">
+                        <li>No data mixing between users</li>
+                        <li>Individual processing</li>
+                        <li>Secure and private</li>
+                    </ul>
+                </div>
+
+                <div class="user-info">
+                    <h3><i class="fas fa-shield-alt"></i> Security</h3>
+                    <p>Your secret key is your password. Keep it safe!</p>
+                    <ul style="margin: 10px 0 10px 20px;">
+                        <li>Encrypted credentials</li>
+                        <li>Secure Google Sheets storage</li>
+                        <li>Individual access keys</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECRET KEY MODAL -->
+    <div class="modal" id="secretKeyModal">
+        <div class="modal-content">
+            <h2><i class="fas fa-key"></i> Your Secret Key</h2>
+            <p><strong>IMPORTANT: Save this key securely!</strong></p>
+            <div class="secret-key-box">
+                <code id="secretKeyText"></code>
+            </div>
+            <p>You'll need this key to login. Copy it now:</p>
+            <button class="btn btn-primary" onclick="copySecretKeyFromModal()">
+                <i class="fas fa-copy"></i> Copy Secret Key
+            </button>
+            <button class="btn btn-success" onclick="closeSecretKeyModal()">
+                <i class="fas fa-check"></i> I've Saved My Key
+            </button>
+        </div>
+    </div>
+
+    <script>
+    // Global variables
+    let userSecretKey = '';
+    let userEmail = '';
+    let userCredits = 0;
+    const API_BASE = window.location.origin;
+
+    // Utility functions
+    function showLoading() {
+        document.getElementById('loadingOverlay').style.display = 'flex';
+    }
+
+    function hideLoading() {
+        document.getElementById('loadingOverlay').style.display = 'none';
+    }
+
+    function showStatus(message, type) {
+        const statusDiv = document.getElementById('status');
+        statusDiv.textContent = message;
+        statusDiv.className = `status status-${type}`;
+        statusDiv.style.display = 'block';
+      
+        if (type === 'success') {
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 5000);
+        }
+    }
+
+    function addBotLog(message) {
+        const logContainer = document.getElementById('botLog');
+        const timestamp = new Date().toLocaleTimeString();
+        const logEntry = document.createElement('div');
+        logEntry.className = 'log-entry';
+        logEntry.textContent = `[${timestamp}] ${message}`;
+        logContainer.appendChild(logEntry);
+        logContainer.scrollTop = logContainer.scrollHeight;
+    }
+
+    // Authentication functions
+    async function register() {
+        const email = document.getElementById('registerEmail').value;
+        const password = document.getElementById('registerPassword').value;
+
+        if (!email || !password) {
+            showStatus('Please enter both email and password', 'error');
+            return;
+        }
+
+        if (password.length < 6) {
+            showStatus('Password must be at least 6 characters', 'error');
+            return;
+        }
+
+        showLoading();
+        
+        try {
+            const response = await fetch(API_BASE + '/register', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({email, password})
+            });
+          
+            const result = await response.json();
+          
+            if (response.ok) {
+                showSecretKeyModal(result.secret_key);
+                showStatus('Registration successful! Save your secret key.', 'success');
+            } else {
+                throw new Error(result.error || 'Registration failed');
+            }
+        } catch (error) {
+            showStatus(error.message, 'error');
+        } finally {
+            hideLoading();
+        }
+    }
+
+    async function login() {
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+
+        if (!email || !password) {
+            showStatus('Please enter both email and password', 'error');
+            return;
+        }
+
+        showLoading();
+        
+        try {
+            const response = await fetch(API_BASE + '/login', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({email, password})
+            });
+          
+            const result = await response.json();
+          
+            if (response.ok) {
+                userSecretKey = result.secret_key;
+                userEmail = email;
+                userCredits = result.credits;
+                
+                showDashboard();
+                loadUserData(result.user_data);
+                showStatus('Login successful!', 'success');
+            } else {
+                throw new Error(result.error || 'Login failed');
+            }
+        } catch (error) {
+            showStatus(error.message, 'error');
+        } finally {
+            hideLoading();
+        }
+    }
+
+    // Dashboard functions
+    function showDashboard() {
+        document.getElementById('authSection').style.display = 'none';
+        document.getElementById('dashboardSection').style.display = 'block';
+        
+        document.getElementById('userEmail').textContent = userEmail;
+        document.getElementById('userCredits').textContent = userCredits;
+        document.getElementById('userSecretKey').textContent = userSecretKey;
+        
+        // Start status polling
+        startStatusPolling();
+    }
+
+    function showLogin() {
+        document.getElementById('registerForm').style.display = 'none';
+        document.getElementById('loginForm').style.display = 'block';
+    }
+
+    function showRegister() {
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('registerForm').style.display = 'block';
+    }
+
+    function logout() {
+        userSecretKey = '';
+        userEmail = '';
+        userCredits = 0;
+        
+        document.getElementById('dashboardSection').style.display = 'none';
+        document.getElementById('authSection').style.display = 'block';
+        showLogin();
+        
+        showStatus('Logged out successfully', 'success');
+    }
+
+    // Data management
+    function addDataRow() {
+        const dataRows = document.getElementById('dataRows');
+        const newRow = document.createElement('div');
+        newRow.className = 'data-row';
+        newRow.innerHTML = `
+            <input type="text" placeholder="Phone number" class="phone-input">
+            <textarea placeholder="Message" rows="2" class="message-input"></textarea>
+            <span class="status-badge">Pending</span>
+        `;
+        dataRows.appendChild(newRow);
+    }
+
+    async function saveData() {
+        const phoneInputs = document.querySelectorAll('.phone-input');
+        const messageInputs = document.querySelectorAll('.message-input');
+        
+        const phoneNumbers = [];
+        const messages = [];
+        
+        for (let i = 0; i < phoneInputs.length; i++) {
+            const phone = phoneInputs[i].value.trim();
+            const message = messageInputs[i].value.trim();
+            
+            if (phone && message) {
+                phoneNumbers.push(phone);
+                messages.push(message);
+            }
+        }
+        
+        if (phoneNumbers.length === 0) {
+            showStatus('Please enter at least one phone number and message', 'error');
+            return;
+        }
+
+        showLoading();
+        
+        try {
+            const response = await fetch(API_BASE + '/save_data', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    secret_key: userSecretKey,
+                    phone_numbers: phoneNumbers,
+                    messages: messages
+                })
+            });
+          
+            const result = await response.json();
+          
+            if (response.ok) {
+                showStatus(`Data saved successfully! ${phoneNumbers.length} contacts saved.`, 'success');
+            } else {
+                throw new Error(result.error || 'Failed to save data');
+            }
+        } catch (error) {
+            showStatus(error.message, 'error');
+        } finally {
+            hideLoading();
+        }
+    }
+
+    async function loadUserData(userData) {
+        const previousDataDiv = document.getElementById('previousData');
+        
+        if (userData && userData.phone_numbers && userData.phone_numbers.length > 0) {
+            previousDataDiv.innerHTML = `
+                <h3>Your Previous Data</h3>
+                <p>Last updated: ${userData.last_updated || 'Unknown'}</p>
+                <p>Contacts: ${userData.phone_numbers.length}</p>
+                <div style="max-height: 200px; overflow-y: auto; margin-top: 10px;">
+                    ${userData.phone_numbers.map((phone, index) => `
+                        <div style="padding: 5px; border-bottom: 1px solid #e5e7eb;">
+                            <strong>${phone}</strong>: ${userData.messages[index]?.substring(0, 50)}...
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        } else {
+            previousDataDiv.innerHTML = '<p>No previous data found.</p>';
+        }
+    }
+
+    // Bot control functions
+    async function startBot() {
+        showLoading();
+        addBotLog('Starting bot...');
+        
+        try {
+            const response = await fetch(API_BASE + '/start_bot', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({secret_key: userSecretKey})
+            });
+          
+            const result = await response.json();
+          
+            if (response.ok) {
+                userCredits = result.remaining_credits;
+                document.getElementById('userCredits').textContent = userCredits;
+                
+                showStatus('Bot started successfully!', 'success');
+                addBotLog('Bot started! Processing your data...');
+                
+                if (result.data_used) {
+                    addBotLog('Using your saved data...');
+                }
+            } else {
+                throw new Error(result.error || 'Failed to start bot');
+            }
+        } catch (error) {
+            showStatus(error.message, 'error');
+            addBotLog('Error starting bot: ' + error.message);
+        } finally {
+            hideLoading();
+        }
+    }
+
+    async function stopBot() {
+        showLoading();
+        addBotLog('Stopping bot...');
+        
+        try {
+            const response = await fetch(API_BASE + '/stop_bot', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({secret_key: userSecretKey})
+            });
+          
+            const result = await response.json();
+          
+            if (response.ok) {
+                showStatus('Bot stopped successfully!', 'success');
+                addBotLog('Bot stopped.');
+            } else {
+                throw new Error(result.error || 'Failed to stop bot');
+            }
+        } catch (error) {
+            showStatus(error.message, 'error');
+            addBotLog('Error stopping bot: ' + error.message);
+        } finally {
+            hideLoading();
+        }
+    }
+
+    async function checkBotStatus() {
+        if (!userSecretKey) return;
+        
+        try {
+            const response = await fetch(API_BASE + '/get_status', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({secret_key: userSecretKey})
+            });
+          
+            const result = await response.json();
+          
+            if (response.ok) {
+                document.getElementById('botStatus').textContent = result.bot_status;
+                
+                if (result.bot_status === 'running') {
+                    addBotLog('Bot is running...');
+                }
+            }
+        } catch (error) {
+            console.error('Status check error:', error);
+        }
+    }
+
+    function startStatusPolling() {
+        setInterval(checkBotStatus, 5000);
+    }
+
+    // Secret key modal functions
+    function showSecretKeyModal(secretKey) {
+        document.getElementById('secretKeyText').textContent = secretKey;
+        document.getElementById('secretKeyModal').style.display = 'flex';
+    }
+
+    function closeSecretKeyModal() {
+        document.getElementById('secretKeyModal').style.display = 'none';
+        showLogin();
+    }
+
+    function copySecretKeyFromModal() {
+        const keyText = document.getElementById('secretKeyText').textContent;
+        navigator.clipboard.writeText(keyText);
+        alert('Secret key copied to clipboard!');
+    }
+
+    function copySecretKey() {
+        navigator.clipboard.writeText(userSecretKey);
+        showStatus('Secret key copied to clipboard!', 'success');
+    }
+
+    // Tab switching
+    function switchTab(tabName) {
+        // Hide all tabs
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        
+        // Show selected tab
+        document.getElementById(tabName + 'Tab').classList.add('active');
+        event.target.classList.add('active');
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('WhatsApp Bulk Messenger loaded');
+        // Add enter key listeners
+        document.getElementById('loginPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') login();
+        });
+        document.getElementById('registerPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') register();
+        });
+    });
+    </script>
+</body>
+</html>
